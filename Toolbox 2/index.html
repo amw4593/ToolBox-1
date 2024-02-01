@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <svg id="theSVG"></svg>
+    <script>
+
+        const rect = (x, y, width, height, stroke, fill) => {
+            return `<rect x="${x}" y="${y}" width="${width}" 
+                          height="${height}" stroke="${stroke}" fill="${fill}" />`
+        }
+
+        const polyline = (points, stroke, fill) => {
+            return `<polyline points="${points}" stroke="${stroke}" fill="${fill}" />`;
+        }
+
+        const path = (d, stroke, fill) => {
+            return `<path d="${d}" stroke="${stroke}" fill="${fill}" />`;
+        }
+
+        const group = (transform, content) => {
+            return `<g transform="${transform}">${content}</g>`;
+        }
+
+        const makeMySvg = (numSquares) => {
+            let svgContent = '';
+            let basePoints = "0,0 0,130 150,50 150,0 0,0";
+
+            for (let i = 0; i < numSquares; i++) {
+                const currentSize = 50 - i * 4; 
+                const currentSquarePoints = basePoints
+                    .split(' ')
+                    .map(pair => {
+                        const [x, y] = pair.split(',').map(Number);
+                        const newX = x + (50 - currentSize) / 2;
+                        const newY = y + (50 - currentSize) / 2;
+                        return `${newX},${newY}`;
+                    })
+                    .join(' ');
+
+                svgContent += polyline(currentSquarePoints, "black", "transparent");
+            }
+
+            return svgContent;
+            return ;
+        }
+
+        const theSvg = makeMySvg(10);
+        document.querySelector('svg').innerHTML = theSvg;
+
+    </script>
+</body>
+</html>

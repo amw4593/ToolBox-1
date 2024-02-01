@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVG</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <svg id="theSVG"></svg>
+    <script>
+
+        const rect = (x, y, width, height, stroke, fill) => {
+            return `<rect x="${x}" y="${y}" width="${width}" 
+                          height="${height}" stroke="${stroke}" fill="${fill}" />`
+        }
+
+        const polyline = (points, stroke, fill) => {
+            return `<polyline points="${points}" stroke="${stroke}" fill="${fill}" />`;
+        }
+
+        const path = (d, stroke, fill) => {
+            return `<path d="${d}" stroke="${stroke}" fill="${fill}" />`;
+        }
+
+        const group = (transform, content) => {
+            return `<g transform="${transform}">${content}</g>`;
+        }
+
+        const makeMySvg = () => {
+            let rows = '';
+            for (let i = 0; i < 18; i++) {
+                let cols = '';
+                for (let j = 0; j < 18; j++) {
+                    const squareSize = 5;
+                    const x = i * squareSize * 3;
+                    const y = j * squareSize * 3;
+                    cols += rect(x, y, squareSize, squareSize, 'black', 'none');
+                }
+                rows += group('', cols);
+            }
+            return `
+                <svg width="100%" height="100%" viewBox="0 0 100 100">
+                    ${rows}
+                </svg>
+            `;
+        }
+
+        const theSvg = makeMySvg();
+        document.querySelector('svg').outerHTML = theSvg;
+
+    </script>
+</body>
+</html>
