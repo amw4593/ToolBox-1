@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SVG</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <svg id="theSVG"></svg>
+    <script>
+
+        const rect = (x, y, width, height, stroke, fill) => {
+            return `<rect x="${x}" y="${y}" width="${width}" 
+                          height="${height}" stroke="${stroke}" fill="${fill}" />`
+        }
+
+        const polyline = (points, stroke, fill) => {
+            return `<polyline points="${points}" stroke="${stroke}" fill="${fill}" />`;
+        }
+
+        const path = (d, stroke, fill) => {
+            return `<path d="${d}" stroke="${stroke}" fill="${fill}" />`;
+        }
+
+        const group = (content, transforms = "") => {
+            return `<g transform="${transforms}">${content}</g>`;
+        }
+
+        const translate = (x, y) => {
+            return `translate(${x}, ${y})`;
+        }
+
+        const rotate = (angle) => {
+            return `rotate(${angle})`;
+        }
+
+        const scale = (scaleX, scaleY) => {
+            return `scale(${scaleX}, ${scaleY})`;
+        }
+
+        const makeGrid = (rows, cols, squareSize) => {
+            let svgContent = '';
+            const baseRotation = 45;
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const x = col * squareSize;
+                    const y = row * squareSize;
+
+                    const rotation = baseRotation + row * 5;
+
+                    const transforms = [
+                        translate(x, y),
+                        rotate(rotation),
+                        scale(1, 1)
+                    ].join(" ");
+
+                    svgContent += group(rect(0, 0, squareSize, squareSize, "black", "transparent", transforms), transforms);
+                }
+            }
+
+            return svgContent;
+        }
+
+        const theSvg = makeGrid(18, 18, 20);
+        document.querySelector('svg').innerHTML = theSvg;
+    </script>
+</body>
+
+</html>
