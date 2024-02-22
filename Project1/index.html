@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crazy Clock</title>
+</head>
+<body>
+
+<svg id="clockContainer" width="1700" height="1000" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#ffffff" />
+</svg>
+
+<script>
+  function createClock(x, y, hours, minutes) {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.setAttribute("transform", `translate(${x}, ${y})`);
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", "50");
+    circle.setAttribute("cy", "50");
+    circle.setAttribute("r", "40");
+    circle.setAttribute("fill", "#ffffff");
+    circle.setAttribute("stroke", "#999999");
+    circle.setAttribute("stroke-width", "1.5");
+
+    const hourAngle = (hours % 12 + minutes / 60) * 30; 
+    const minuteAngle = minutes * 6; 
+
+    const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line1.setAttribute("x1", "50");
+    line1.setAttribute("y1", "50");
+    line1.setAttribute("x2", "50");
+    line1.setAttribute("y2", "20");
+    line1.setAttribute("transform", `rotate(${hourAngle} 50 50)`);
+    line1.setAttribute("stroke", "#000000");
+    line1.setAttribute("stroke-width", "4");
+
+    const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line2.setAttribute("x1", "50");
+    line2.setAttribute("y1", "50");
+    line2.setAttribute("x2", "15");
+    line2.setAttribute("y2", "50");
+    line2.setAttribute("transform", `rotate(${minuteAngle} 50 50)`);
+    line2.setAttribute("stroke", "#000000");
+    line2.setAttribute("stroke-width", "4");
+
+    group.appendChild(circle);
+    group.appendChild(line1);
+    group.appendChild(line2);
+
+    return group;
+  }
+
+  const rows = 10;
+  const cols = 17;
+  const cellSize = 100;
+
+  const svgContainer = document.getElementById("clockContainer");
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const x = col * cellSize;
+      const y = row * cellSize;
+      
+      const randomHours = Math.floor(Math.random() * 24);
+      const randomMinutes = Math.floor(Math.random() * 60);
+
+      const clock = createClock(x, y, randomHours, randomMinutes);
+      svgContainer.appendChild(clock);
+    }
+  }
+</script>
+</body>
+</html>
