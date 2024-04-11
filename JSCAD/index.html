@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Demo Application</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        #render {
+            width: 90vmin;
+            height: 90vmin;
+            margin: auto;
+            outline: 1px solid black;
+
+        }
+
+        div:has(#render) {
+            width: 100%;
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            font-size: 1.25em;
+            width: fit-content;
+            height: fit-content;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
+    </code_to_rewrite>
+</head>
+
+<body>
+    <script src="https://unpkg.com/@jscad/modeling" id="MODELING"></script>
+    <script src="https://unpkg.com/@jscad/regl-renderer"></script>
+
+    <div>
+        <div id="render"></div>
+    </div>
+
+    <script type="module" language="javascript">
+        import { render } from './render.js';
+
+        const { booleans, colors, primitives, transforms } = jscadModeling // modeling comes from the included MODELING library
+
+        const { intersect, subtract, union } = booleans
+        const { colorize, colorNameToRgb } = colors
+        const { cube, sphere } = primitives
+
+        const demo = (parameters) => {
+            const size = parameters.size;
+
+            // Recursive function to generate Menger sponge fractal
+            const generateMengerSponge = (shape, depth) => {
+                if (depth === 0) {
+                    return shape;
+                }
+
+                // Create 7 smaller cubes by removing central cube and smaller cubes at corners
+                const subShapes = [];
+                const subSize = size;
+                for (let x = -1; x <= 1; x++) {
+                    for (let y = -1; y <= 1; y++) {
+                        for (let z = -1; z <= 1; z++) {
+                            // Skip the central cube and the cubes at the corners
+                            if (Math.abs(x) + Math.abs(y) + Math.abs(z) < 2) {
+                                const xOffset = x * subSize;
+                                const yOffset = y * subSize;
+                                const zOffset = z * subSize;
+
+                                const subShape = transforms.translate([xOffset, yOffset, zOffset], shape);
+                                subShapes.push(generateMengerSponge(subShape, depth - 1));
+                            }
+                        }
+                    }
+                }
+
+                return subShapes;
+            };
+
+            // Create initial cube
+            const initialShape = primitives.cube({ size });
+
+            // Generate Menger sponge fractal with a certain depth
+            const mengerSponge = generateMengerSponge(initialShape, 2); // Adjust the depth as needed
+
+            // Colorize the fractal
+            const coloredMengerSponge = colorize(colorNameToRgb('purple'), mengerSponge);
+
+            return coloredMengerSponge;
+        };
+
+
+        render(document.getElementById("render"), demo({ size: 40 }))
+
+    </script>
+</body>
+
+</html>
